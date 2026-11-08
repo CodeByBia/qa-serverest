@@ -1,0 +1,23 @@
+{
+  "name": "qa-serverest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "28.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "2.2.8",
+    "@cypress/grep": "7.0.0",
+    "ajv": "8.20.0",
+    "cypress": "16.2.1",
+    "cypress-mochawesome-reporter": "5.0.0",
+    "esbuild": "0.28.2",
+    "serverest": "3.2.2",
+    "start-server-and-test": "3.0.13"
+  }
+}

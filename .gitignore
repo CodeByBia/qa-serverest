@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+
+# Artefatos gerados pelo Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+cypress/reports/
+
+# Logs
+npm-debug.log*
+*.log
+
+# Variáveis de ambiente / segredos
+.env
+.env.*
+cypress.env.json
+
+# Sistema operacional / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
