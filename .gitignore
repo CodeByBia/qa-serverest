@@ -7,6 +7,12 @@ cypress/screenshots/
 cypress/downloads/
 cypress/reports/
 
+# Artefatos gerados pelo Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
 # Logs
 npm-debug.log*
 *.log
