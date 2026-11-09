@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+"scripts": {
+  "api:start": "serverest --nodoc --timeout 600",
+  "cy:api": "cypress run --config-file cypress.api.config.js --expose grepTags=-@bug-aberto",
+  "cy:api:smoke": "cypress run --config-file cypress.api.config.js --expose grepTags=@smoke,grepFilterSpecs=true",
+  "cy:api:bugs": "cypress run --config-file cypress.api.config.js --expose grepTags=@bug-aberto,grepFilterSpecs=true --reporter-options reportDir=cypress/reports/api-bugs",
+  "cy:open:api": "cypress open --config-file cypress.api.config.js",
+  "test:api": "start-server-and-test api:start http://localhost:3000/usuarios cy:api",
+  "test:api:smoke": "start-server-and-test api:start http://localhost:3000/usuarios cy:api:smoke"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
