@@ -2,16 +2,24 @@
 node_modules/
 
 # Artefatos gerados pelo Cypress
-cypress/videos/
-cypress/screenshots/
-cypress/downloads/
-cypress/reports/
+**/cypress/videos/
+**/cypress/screenshots/
+**/cypress/downloads/
+**/cypress/reports/
 
 # Artefatos gerados pelo Playwright
 test-results/
 playwright-report/
 blob-report/
-playwright/.cache/
+**/playwright/.cache/
+
+# Robot Framework: ambiente virtual e resultados
+.venv/
+__pycache__/
+results/
+output.xml
+log.html
+report.html
 
 # Logs
 npm-debug.log*
