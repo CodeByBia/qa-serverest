@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["nome", "preco", "descricao", "quantidade", "_id"],
+  "properties": {
+    "nome": { "type": "string" },
+    "preco": { "type": "integer", "minimum": 1 },
+    "descricao": { "type": "string" },
+    "quantidade": { "type": "integer", "minimum": 0 },
+    "_id": { "type": "string", "pattern": "^[A-Za-z0-9]{16}$" }
+  },
+  "additionalProperties": false
+}

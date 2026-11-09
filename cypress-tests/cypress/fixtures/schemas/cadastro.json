@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["message", "_id"],
+  "properties": {
+    "message": { "type": "string" },
+    "_id": { "type": "string", "pattern": "^[A-Za-z0-9]{16}$" }
+  },
+  "additionalProperties": false
+}
