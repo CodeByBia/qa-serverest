@@ -5,6 +5,7 @@
   "main": "index.js",
 "scripts": {
   "api:start": "serverest --nodoc --timeout 600",
+  "api:doc": "serverest --timeout 600",
   "cy:api": "cypress run --config-file cypress.api.config.js --expose grepTags=-@bug-aberto",
   "cy:api:smoke": "cypress run --config-file cypress.api.config.js --expose grepTags=@smoke,grepOmitFiltered=true",
   "cy:api:bugs": "cypress run --config-file cypress.api.config.js --expose grepTags=@bug-aberto,grepOmitFiltered=true --reporter-options reportDir=cypress/reports/api-bugs",
