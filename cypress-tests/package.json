@@ -11,7 +11,8 @@
   "cy:api:bugs": "cypress run --config-file cypress.api.config.js --expose grepTags=@bug-aberto,grepOmitFiltered=true --reporter-options reportDir=cypress/reports/api-bugs",
   "cy:open:api": "cypress open --config-file cypress.api.config.js",
   "test:api": "start-server-and-test api:start http://localhost:3000/usuarios cy:api",
-  "test:api:smoke": "start-server-and-test api:start http://localhost:3000/usuarios cy:api:smoke"
+  "test:api:smoke": "start-server-and-test api:start http://localhost:3000/usuarios cy:api:smoke",
+  "test:api:bugs": "start-server-and-test api:start http://localhost:3000/usuarios cy:api:bugs"
 },
   "keywords": [],
   "author": "",
