@@ -11,7 +11,7 @@ describe('POST /login', () => {
         email: usuario.email,
         password: usuario.password
       }).then((resposta) => {
-        expect(resposta.status).to.eq(200)
+        expect(resposta.status).to.eq(201)
         expect(resposta.body.message).to.eq('Login realizado com sucesso')
         expect(resposta.body.authorization).to.match(/^Bearer /)
         expect(ajv.validate(schemaLogin, resposta.body), JSON.stringify(ajv.errors)).to.be.true
