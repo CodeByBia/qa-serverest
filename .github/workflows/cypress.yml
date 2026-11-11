@@ -1,0 +1,132 @@
+name: Cypress
+
+# on: QUANDO o workflow roda 
+on:
+  # pull_request: a cada PR aberto ou atualizado...
+  pull_request:
+    # paths: ...mas só se o PR mexer nestes arquivos
+    paths:
+      - 'cypress-tests/**'
+      - '.github/workflows/cypress.yml'
+  # push: quando algo chega na main 
+  push:
+    branches: [main]
+  # schedule: todo dia num horário fixo (cron: minuto hora dia mês dia-da-semana, em UTC)
+  schedule:
+    - cron: '0 11 * * *' # 11h UTC = 8h em Brasília
+
+  workflow_dispatch:
+
+# concurrency: se chegar uma execução nova na mesma branch, cancela a antiga
+concurrency:
+  group: cypress-${{ github.ref }} # uma fila por branch
+  cancel-in-progress: true
+
+# defaults: todo comando "run:" roda dentro de cypress-tests (como um cd antes)
+defaults:
+  run:
+    working-directory: cypress-tests
+
+# jobs: os conjuntos de passos; cada job roda numa máquina nova
+jobs:
+  # ===== JOB 1: smoke, só em pull request =====
+  api-smoke:
+    name: Smoke de API
+    # if: este job só roda quando o evento é um PR
+    if: github.event_name == 'pull_request'
+    # runs-on: a máquina (versão fixa, não "latest")
+    runs-on: ubuntu-24.04
+    # timeout-minutes: cancela se travar
+    timeout-minutes: 15
+    # steps: os passos, na ordem
+    steps:
+      # checkout: baixa o código do repositório para a máquina
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      # setup-node: instala o Node da versão do .nvmrc e guarda cache do npm
+      - name: Instalar o Node do .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: cypress-tests/package-lock.json
+
+      # npm ci: instala exatamente as versões do package-lock.json
+      - name: Instalar dependências
+        run: npm ci
+
+      # sobe a API em segundo plano (&) e espera até 30 s ela responder
+      - name: Subir ServeRest 3.2.2 local
+        run: |
+          npx serverest --nodoc --timeout 600 > api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:3000/usuarios > /dev/null && exit 0; sleep 1; done
+          echo 'API não respondeu em 30 s'; cat api.log; exit 1
+
+      # roda só os testes @smoke (usa a API que já está no ar)
+      - name: Rodar o smoke de API
+        run: npm run cy:api:smoke
+
+      # upload-artifact: guarda relatórios, prints e log para baixar depois
+      - name: Publicar evidências
+        # if: always(): guarda mesmo se os testes falharem
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: api-smoke-${{ github.run_number }} # número da execução no nome
+          path: |
+            cypress-tests/cypress/reports
+            cypress-tests/cypress/screenshots
+            cypress-tests/api.log
+          if-no-files-found: warn # se um caminho não existir, só avisa
+
+  # ===== JOB 2: regressão, em tudo que NÃO é PR (push, agendamento, manual) =====
+  api-regressao:
+    name: Regressão de API
+    # if: roda em qualquer evento, menos PR
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      # os 4 primeiros passos são iguais aos do job 1
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      - name: Instalar o Node do .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: cypress-tests/package-lock.json
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Subir ServeRest 3.2.2 local
+        run: |
+          npx serverest --nodoc --timeout 600 > api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:3000/usuarios > /dev/null && exit 0; sleep 1; done
+          echo 'API não respondeu em 30 s'; cat api.log; exit 1
+
+      # regressão completa, sem os @bug-aberto; se falhar, o job falha
+      - name: Rodar a regressão de API (sem defeitos conhecidos)
+        run: npm run cy:api
+
+      # roda só os @bug-aberto, na mesma API
+      - name: Rodar os defeitos conhecidos (não bloqueia)
+        # if: always(): roda mesmo se a regressão tiver falhado
+        if: always()
+        # continue-on-error: se este passo falhar, o job NÃO falha
+        continue-on-error: true
+        run: npm run cy:api:bugs
+
+      - name: Publicar evidências
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: api-regressao-${{ github.run_number }}
+          path: |
+            cypress-tests/cypress/reports
+            cypress-tests/cypress/screenshots
+            cypress-tests/api.log
+          if-no-files-found: warn

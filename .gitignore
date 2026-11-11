@@ -35,3 +35,6 @@ cypress.env.json
 Thumbs.db
 .vscode/
 .idea/
+
+# Material de estudo pessoal (fica só na máquina)
+docs/roteiro-cypress.md
