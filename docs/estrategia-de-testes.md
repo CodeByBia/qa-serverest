@@ -107,7 +107,8 @@ Critério de decisão: frequência de execução, risco, estabilidade do comport
 
 **Defeitos conhecidos** recebem a tag `@bug-aberto`: o teste afirma o comportamento correto, sai da regressão bloqueante e roda num passo separado que não bloqueia o pipeline.
 
-**Situação atual:** 55 testes de API automatizados com Cypress (53 na regressão e 2 defeitos conhecidos), cobrindo 15 dos 18 cenários P1. Os 3 restantes são de E2E.
+**Situação atual:** 55 testes de API automatizados com Cypress (53 na regressão e 2 defeitos conhecidos) e 4 com Robot Framework, que repetem cenários do Cypress para comparar as ferramentas no mesmo caso. 15 dos 18 cenários P1 estão automatizados; os 3 restantes são de E2E, em andamento.
+
 
 ## 14. Critérios de qualidade e riscos residuais
 

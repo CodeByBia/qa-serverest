@@ -80,7 +80,6 @@ Estados do carrinho por usuário: **sem carrinho → com carrinho → (concluir:
 | CT-CAR-08 | Lista vazia, quantidade 0 ou produto inexistente | `[]`, `quantidade: 0`, ID inexistente | 400 com mensagem específica [OBS] | P2 | Equivalência · API · Cy | ✅ |
 
 ## Resumo
-
 | Situação | Cenários |
 | --- | --- |
 | ✅ Automatizado | 28 (um deles, o CT-CAR-06, também tem a variação [A, B, A] em 🐞) |
@@ -88,5 +87,17 @@ Estados do carrinho por usuário: **sem carrinho → com carrinho → (concluir:
 | ⏳ Planejado (E2E) | 4 |
 | 🖐 Manual | 2 (CT-AUT-04 e CT-USR-07) |
 | **Total** | **35** |
-| **Casos de teste automatizados (Cypress)** | **55** (53 na regressão + 2 defeitos conhecidos) |
+| **Casos de teste automatizados** | **59**: 55 no Cypress (53 na regressão + 2 defeitos conhecidos) e 4 no Robot |
 
+
+| Arquivo | Cenários | Casos de teste |
+| --- | --- | --- |
+| `cypress-tests/cypress/e2e/api/login.cy.js` | CT-LOG-01 a 04 | 6 |
+| `cypress-tests/cypress/e2e/api/autorizacao.cy.js` | CT-AUT-01 a 03 | 8 |
+| `cypress-tests/cypress/e2e/api/produtos.cy.js` | CT-PRD-01 a 08 | 19 (1 é defeito conhecido) |
+| `cypress-tests/cypress/e2e/api/carrinhos.cy.js` | CT-CAR-01 a 08 | 11 (1 é defeito conhecido) |
+| `cypress-tests/cypress/e2e/api/usuarios.cy.js` | CT-USR-01 a 06 | 11 |
+| `robot-tests/tests/produtos.robot` | CT-PRD-01, CT-AUT-01 (2 linhas), CT-PRD-03 | 4 (repetem o Cypress de propósito) |
+| **Total** | **29 cenários** | **59** |
+
+O Robot repete 4 cenários do Cypress (CT-PRD-01, duas linhas do CT-AUT-01 e o preço zero do CT-PRD-03)
