@@ -76,7 +76,7 @@ Não se usa cobertura de código, porque o sistema é de terceiros.
 
 ## 10. Limitações conhecidas
 
-- Não há especificação de produto além do Swagger: várias expectativas são [HIP] (ver [achados](achados-exploratorios.md)).
+- Não há especificação de produto além do Swagger: várias expectativas são [HIP] (ver [achados](exploratorio.md)).
 - O front público não aponta para a API local, então E2E e API usam dados diferentes.
 - O token expirado exige subir a API com `--timeout` curto, por isso fica fora da suíte principal.
 - Localmente, os dados se acumulam entre execuções (DOC-02); nenhum teste depende de banco vazio.

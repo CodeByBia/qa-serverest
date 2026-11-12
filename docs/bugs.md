@@ -45,7 +45,7 @@ Escalas: severidade **Crítica, Alta, Média, Baixa**; prioridade **P1, P2, P3**
 **Evidências:**
 - Saída do teste: `AssertionError: expected 201 to equal 400`
 - Relatório: ![BUG-01](reports/api-bugs/screenshots)
-- Execução no CI: <link da execução>
+- Execução no CI: <https://github.com/CodeByBia/qa-serverest/actions>
 
 **Causa provável [HIP]:** a detecção de duplicados parece comparar só itens vizinhos, e a baixa de estoque é calculada para cada item repetido a partir do mesmo valor original.
 
