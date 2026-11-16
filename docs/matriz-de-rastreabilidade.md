@@ -1,6 +1,6 @@
 # Matriz de rastreabilidade
 
-Liga cada regra documentada [DOC] ao lugar onde ela está escrita, aos cenários que a verificam e ao arquivo de teste. Fontes: Swagger do ServeRest 3.2.2 (abra `npm run api:doc` e acesse http://localhost:3000) e README do front.
+Liga cada regra documentada [DOC] ao lugar onde ela está escrita, aos cenários que a verificam e ao arquivo de teste. Fontes: Swagger do ServeRest 3.2.2 (abra `npm run api:doc` e acesse http://localhost:3000), README do ServeRest e README do front.
 
 ## Regras documentadas
 
@@ -17,7 +17,7 @@ Liga cada regra documentada [DOC] ao lugar onde ela está escrita, aos cenários
 | RN-09 | Excluir registro inexistente informa "Nenhum registro excluído" | Swagger › `DELETE /usuarios/{_id}` › resposta 200 | CT-USR-05 | `usuarios.cy.js` | ✅ |
 | RN-10 | PUT em ID inexistente cria um registro | Swagger › `PUT /usuarios/{_id}` › descrição | CT-USR-06 | `usuarios.cy.js` | ✅ |
 | RN-11 | Nome de produto é único | Swagger › `POST /produtos` e `PUT /produtos/{_id}` › descrição | CT-PRD-02, CT-PRD-08 | `produtos.cy.js` | ✅ |
-| RN-12 | Preço é inteiro (modelo do corpo); ≥ 1 está descrito no filtro de busca | Swagger › modelo do corpo de `POST /produtos` e filtro `preco` de `GET /produtos` | CT-PRD-03 | `produtos.cy.js` | ✅ |
+| RN-12 | Preço é inteiro (modelo do corpo); ≥ 1 está descrito no filtro de busca | Swagger › modelo do corpo de `POST /produtos` e filtro `preco` de `GET /produtos` | CT-PRD-03 | `produtos.cy.js`, `limites.robot` | ✅ |
 | RN-13 | Quantidade é inteira (modelo do corpo); ≥ 0 está descrito no filtro de busca | Swagger › modelo do corpo de `POST /produtos` e filtro `quantidade` de `GET /produtos` | CT-PRD-04 | `produtos.cy.js` | ✅ |
 | RN-14 | Não é permitido excluir produto que está em carrinho | Swagger › `DELETE /produtos/{_id}` › descrição | CT-PRD-07 | `produtos.cy.js` | ✅ |
 | RN-15 | Cada usuário pode ter só 1 carrinho | Swagger › `POST /carrinhos` › descrição | CT-CAR-02 | `carrinhos.cy.js` | ✅ |
@@ -26,7 +26,8 @@ Liga cada regra documentada [DOC] ao lugar onde ela está escrita, aos cenários
 | RN-18 | Cancelar a compra devolve o estoque | Swagger › `DELETE /carrinhos/cancelar-compra` › descrição | CT-CAR-03 | `carrinhos.cy.js` | ✅ |
 | RN-19 | Concluir a compra mantém a baixa no estoque | Swagger › `DELETE /carrinhos/concluir-compra` › descrição (por contraste com o cancelar) | CT-CAR-04 | `carrinhos.cy.js` | ✅ |
 | RN-20 | Concluir ou cancelar sem carrinho informa que não há carrinho | Swagger › `concluir-compra` e `cancelar-compra` › resposta 200 | CT-CAR-07 | `carrinhos.cy.js` | ✅ |
-| RN-21 | Login de administrador no front leva à home de administrador | README do front (a confirmar na Parte 5) | CT-LOG-05 | — (Parte 5) | ⏳ |
+| RN-21 | Login de administrador no front leva à home de administrador | README do front | CT-LOG-05 | — | ⏭ próximo passo |
+| RN-22 | A API envia os headers de segurança documentados e não expõe o `X-Powered-By` | README do ServeRest › seção "Segurança" | CT-SEG-01 | `seguranca.robot` | ✅ |
 
 ## Cenários baseados em comportamento observado [OBS]
 
@@ -43,9 +44,9 @@ Não vêm de uma regra escrita, mas de comportamento observado na exploração e
 
 | Medida | Resultado |
 | --- | --- |
-| Regras [DOC] com pelo menos um cenário | 21 de 21 (100%) |
-| Regras [DOC] verificadas por teste automatizado | 19 de 21 (RN-06 é manual; RN-21 é E2E, planejado) |
-| Cenários P1 automatizados | 15 de 18 (os 3 restantes são E2E) |
+| Regras [DOC] com pelo menos um cenário | 22 de 22 (100%) |
+| Regras [DOC] verificadas por teste automatizado | 20 de 22 (RN-06 é manual; RN-21 é E2E, próximo passo) |
+| Cenários P1 de API automatizados | 15 de 15 (os 3 P1 de interface ficam como próximo passo) |
 | Regras com defeito aberto | 1 [DOC] (RN-16, BUG-01) e 1 comportamento observado (CT-PRD-06, BUG-02) |
 
 ## Endpoints × métodos exercitados

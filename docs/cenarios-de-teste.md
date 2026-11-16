@@ -1,21 +1,21 @@
 # Cenários de teste
 
-35 cenários, escolhidos por técnica e risco Cada resultado esperado vem de uma regra [DOC] ou de um comportamento [OBS] aceito como referência. Os que dependem de decisão de produto estão marcados [HIP] e não são automatizados como "passou/falhou" até a definição.
+36 cenários, escolhidos por técnica e risco. Cada resultado esperado vem de uma regra [DOC] ou de um comportamento [OBS] aceito como referência. Os que dependem de decisão de produto estão marcados [HIP] e não são automatizados como "passou/falhou" até a definição.
 
 **Coluna Tipo:** técnica · nível · ferramenta (Cy = Cypress, Rb = Robot, Pw = Playwright, Man = manual).
 
-**Coluna Situação:** ✅ automatizado · ⏳ planejado · 🖐 manual · 🐞 automatizado, falha por defeito conhecido.
+**Coluna Situação:** ✅ automatizado · ⏭ próximo passo · 🖐 manual · 🐞 automatizado, falha por defeito conhecido.
 
 ## 1. Login
 
 | ID | Objetivo | Dados | Resultado esperado | Prior. | Tipo | Situação |
 | --- | --- | --- | --- | --- | --- | --- |
-| CT-LOG-01 | Login válido retorna token | E-mail e senha corretos | 200, "Login realizado com sucesso", `authorization` no formato `Bearer <jwt>` (schema) [DOC] | P1 | Positivo · API · Cy, Pw | ✅ |
+| CT-LOG-01 | Login válido retorna token | E-mail e senha corretos | 200, "Login realizado com sucesso", `authorization` no formato `Bearer <jwt>` (schema) [DOC] | P1 | Positivo · API · Cy | ✅ |
 | CT-LOG-02 | Senha incorreta | Senha errada | 401 "Email e/ou senha inválidos" [DOC] | P1 | Negativo · API · Cy | ✅ |
 | CT-LOG-03 | E-mail não cadastrado | E-mail inexistente | 401, mesma mensagem do CT-LOG-02 (não revela qual campo errou) [OBS] | P2 | Negativo · API · Cy | ✅ |
 | CT-LOG-04 | Campos ausentes, vazios e formato errado | `{}`, `""`, e-mail sem @ | 400 com mensagem por campo [OBS] | P2 | Equivalência · API · Cy | ✅ |
-| CT-LOG-05 | Login pelo front com admin | Admin criado na API **pública** | Redireciona para a home de administrador [DOC: README do front] | P1 | Positivo · E2E · Cy, Pw | ⏳ |
-| CT-LOG-06 | Login inválido pelo front | Senha errada | Alerta "Email e/ou senha inválidos" visível | P1 | Negativo · E2E · Cy, Pw | ⏳ |
+| CT-LOG-05 | Login pelo front com admin | Admin criado na API **pública** | Redireciona para a home de administrador [DOC: README do front] | P1 | Positivo · E2E · Cy, Pw | ⏭ |
+| CT-LOG-06 | Login inválido pelo front | Senha errada | Alerta "Email e/ou senha inválidos" visível | P1 | Negativo · E2E · Cy, Pw | ⏭ |
 
 ## 2. Autorização e token
 
@@ -53,16 +53,16 @@ Tabela de decisão para `POST /produtos`:
 
 | ID | Objetivo | Dados | Resultado esperado | Prior. | Tipo | Situação |
 | --- | --- | --- | --- | --- | --- | --- |
-| CT-PRD-01 | Cadastro válido e consulta | Nome único | 201; GET devolve os dados gravados (schema) | P1 | Positivo · API · Cy, Rb, Pw | ✅ |
+| CT-PRD-01 | Cadastro válido e consulta | Nome único | 201; GET devolve os dados gravados (schema) | P1 | Positivo · API · Cy, Rb | ✅ |
 | CT-PRD-02 | Nome duplicado, inclusive com espaços nas pontas | Mesmo nome; `"  Nome  "` | 400 "Já existe produto com esse nome" [DOC] | P1 | Negativo · API · Cy | ✅ |
-| CT-PRD-03 | Limites de preço | -1, 0, 1, 2, 10.5, 9007199254740992 | -1, 0, 10.5 e o último: 400; 1 e 2: 201 [DOC + OBS] | P1 | Valor limite · API · Cy (Rb: 0) | ✅ |
+| CT-PRD-03 | Limites de preço | -1, 0, 1, 2, 10.5, 9007199254740992 | -1, 0, 10.5 e o último: 400; 1 e 2: 201 [DOC + OBS] | P1 | Valor limite · API · Cy, Rb | ✅ |
 | CT-PRD-04 | Limites de quantidade | -1, 0, 1, 1.5 | -1 e 1.5: 400; 0 e 1: 201 [DOC] | P2 | Valor limite · API · Cy | ✅ |
 | CT-PRD-05 | Campos ausentes, vazios e tipo errado | `{}`, `descricao: ""`, `preco: "dez"` | 400 por campo [OBS] | P2 | Equivalência · API · Cy | ✅ |
 | CT-PRD-06 | Nome só com espaços | `"    "` | 400 "nome não pode ficar em branco". **Hoje falha: BUG-02** | P2 | Negativo · API · Cy | 🐞 |
 | CT-PRD-07 | Excluir produto que está em carrinho | Produto em carrinho | 400 "Não é permitido excluir produto que faz parte de carrinho" [DOC] | P2 | Integridade · API · Cy | ✅ |
 | CT-PRD-08 | Editar para nome já usado por outro produto | 2 produtos | 400 "Já existe produto com esse nome" [DOC] | P2 | Negativo · API · Cy | ✅ |
-| CT-PRD-09 | Cadastrar produto pelo front | Admin criado na API pública, logado | Redireciona para a lista e o produto aparece | P1 | Positivo · E2E · Cy, Pw | ⏳ |
-| CT-PRD-10 | Validação visível no front | Formulário vazio | Mensagens de campo obrigatório exibidas [HIP: textos a confirmar] | P2 | Negativo · E2E · Cy | ⏳ |
+| CT-PRD-09 | Cadastrar produto pelo front | Admin criado na API pública, logado | Redireciona para a lista e o produto aparece | P1 | Positivo · E2E · Cy, Pw | ⏭ |
+| CT-PRD-10 | Validação visível no front | Formulário vazio | Mensagens de campo obrigatório exibidas [HIP: textos a confirmar] | P2 | Negativo · E2E · Cy | ⏭ |
 
 ## 5. Carrinhos e estoque
 
@@ -79,15 +79,21 @@ Estados do carrinho por usuário: **sem carrinho → com carrinho → (concluir:
 | CT-CAR-07 | Concluir ou cancelar sem carrinho | Usuário sem carrinho | 200 "Não foi encontrado carrinho para esse usuário" [DOC] | P3 | Estados · API · Cy | ✅ |
 | CT-CAR-08 | Lista vazia, quantidade 0 ou produto inexistente | `[]`, `quantidade: 0`, ID inexistente | 400 com mensagem específica [OBS] | P2 | Equivalência · API · Cy | ✅ |
 
+## 6. Segurança
+
+| ID | Objetivo | Dados | Resultado esperado | Prior. | Tipo | Situação |
+| --- | --- | --- | --- | --- | --- | --- |
+| CT-SEG-01 | Headers de segurança documentados | `GET /usuarios` | Os 6 headers do README com os valores documentados; `X-Powered-By` ausente [DOC] | P3 | Funcional · API · Rb | ✅ |
+
 ## Resumo
 | Situação | Cenários |
 | --- | --- |
-| ✅ Automatizado | 28 (um deles, o CT-CAR-06, também tem a variação [A, B, A] em 🐞) |
+| ✅ Automatizado | 29 (um deles, o CT-CAR-06, também tem a variação [A, B, A] em 🐞) |
 | 🐞 Automatizado, falha por defeito conhecido | 1 (CT-PRD-06) |
-| ⏳ Planejado (E2E) | 4 |
+| ⏭ Próximo passo (E2E) | 4 |
 | 🖐 Manual | 2 (CT-AUT-04 e CT-USR-07) |
-| **Total** | **35** |
-| **Casos de teste automatizados** | **59**: 55 no Cypress (53 na regressão + 2 defeitos conhecidos) e 4 no Robot |
+| **Total** | **36** |
+| **Casos de teste automatizados** | **65**: 56 no Cypress (54 na regressão + 2 defeitos conhecidos) e 9 no Robot |
 
 
 | Arquivo | Cenários | Casos de teste |
@@ -95,9 +101,11 @@ Estados do carrinho por usuário: **sem carrinho → com carrinho → (concluir:
 | `cypress-tests/cypress/e2e/api/login.cy.js` | CT-LOG-01 a 04 | 6 |
 | `cypress-tests/cypress/e2e/api/autorizacao.cy.js` | CT-AUT-01 a 03 | 8 |
 | `cypress-tests/cypress/e2e/api/produtos.cy.js` | CT-PRD-01 a 08 | 19 (1 é defeito conhecido) |
-| `cypress-tests/cypress/e2e/api/carrinhos.cy.js` | CT-CAR-01 a 08 | 11 (1 é defeito conhecido) |
 | `cypress-tests/cypress/e2e/api/usuarios.cy.js` | CT-USR-01 a 06 | 11 |
-| `robot-tests/tests/produtos.robot` | CT-PRD-01, CT-AUT-01 (2 linhas), CT-PRD-03 | 4 (repetem o Cypress de propósito) |
-| **Total** | **29 cenários** | **59** |
+| `cypress-tests/cypress/e2e/api/carrinhos.cy.js` | CT-CAR-01 a 08 | 12 (1 é defeito conhecido) |
+| `robot-tests/tests/produtos.robot` | CT-PRD-01, CT-AUT-01 (2 linhas) | 3 (repetem o Cypress de propósito) |
+| `robot-tests/tests/limites.robot` | CT-PRD-03 | 5 (valor limite com `Test Template`) |
+| `robot-tests/tests/seguranca.robot` | CT-SEG-01 | 1 (só no Robot) |
+| **Total** | **30 cenários** | **65** |
 
-O Robot repete 4 cenários do Cypress (CT-PRD-01, duas linhas do CT-AUT-01 e o preço zero do CT-PRD-03)
+O Robot repete 3 casos do Cypress (CT-PRD-01 e duas linhas do CT-AUT-01) para comparar as ferramentas no mesmo caso, aplica o valor limite do CT-PRD-03 com `Test Template` e acrescenta o CT-SEG-01, que só ele cobre.

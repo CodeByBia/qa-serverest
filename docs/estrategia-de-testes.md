@@ -1,16 +1,16 @@
 # Estratégia de testes
 
-Estratégia de testes do ServeRest 3.2.2. Prioriza as regras de negócio da API, onde estão os riscos de maior impacto, e usará o E2E apenas para os fluxos críticos de interface.
+Estratégia de testes do ServeRest 3.2.2. Prioriza as regras de negócio da API, onde estão os riscos de maior impacto. Nesta versão, o projeto cobre a API; os testes de interface (E2E) ficam como próximo passo.
 
 ## 1. Objetivo dos testes
 
-Verificar se a API do ServeRest 3.2.2 cumpre as regras documentadas de autenticação, autorização, cadastro e estoque, e se o front permite login e gestão de produtos. Também registrar lacunas de especificação e defeitos de forma reproduzível.
+Verificar se a API do ServeRest 3.2.2 cumpre as regras documentadas de autenticação, autorização, cadastro e estoque. Também registrar lacunas de especificação e defeitos de forma reproduzível.
 
 ## 2. Escopo
 
 - **API:** `/login`, `/usuarios`, `/produtos`, `/carrinhos` (incluindo `concluir-compra` e `cancelar-compra`).
 - **Aspectos:** status HTTP, mensagens, estrutura das respostas (schema), autenticação, autorização (admin × cliente), validação de entrada, regras de estoque e integridade entre recursos.
-- **Front:** login (sucesso e falha) e cadastro e listagem de produtos pelo administrador.
+- **Segurança:** headers de segurança documentados no README do ServeRest.
 
 ## 3. Fora do escopo
 
@@ -20,7 +20,7 @@ Verificar se a API do ServeRest 3.2.2 cumpre as regras documentadas de autentica
 | Upload de imagem de produto | Campo opcional, sem regra documentada |
 | Teste de carga | O README proíbe no ambiente público; fora do foco |
 | Segurança avançada (pentest) | Fora da competência proposta; as observações de segurança são apenas registradas |
-| Compatibilidade entre navegadores no Cypress | Coberta de forma demonstrativa no Playwright |
+| Testes de interface (E2E) no front público | Decisão desta versão: o foco é a API, onde estão os maiores riscos. Os cenários estão desenhados e ficam como próximo passo |
 | Paginação | Não existe na API [OBS] |
 
 ## 4. Riscos do sistema
@@ -33,7 +33,7 @@ Verificar se a API do ServeRest 3.2.2 cumpre as regras documentadas de autentica
 | R4 | Dados inválidos aceitos e gravados | Médio | Média (confirmado no BUG-02) | Equivalência, valor limite e campos em branco |
 | R5 | Exclusão quebrar a integridade (produto em carrinho, usuário com carrinho) | Médio | Baixa | Cenários de exclusão com dependência |
 | R6 | Mudança no contrato da resposta | Médio | Baixa | Validação de JSON Schema |
-| R7 | Ambiente público instável ou alterado por terceiros | Médio (para a suíte) | Média | E2E separado do PR, dados únicos, sem depender da massa pré-cadastrada |
+| R7 | Ambiente público instável ou alterado por terceiros | Médio (para a suíte) | Média | Os testes de API não usam o ambiente público; o E2E, quando entrar, ficará num job separado do PR |
 | R8 | Exposição de dados sensíveis (senha em texto claro) | Alto num produto real | Confirmado [OBS] | Registrado como observação de segurança, sem expectativa de correção |
 
 ## 5. Funcionalidades críticas
@@ -45,7 +45,7 @@ Verificar se a API do ServeRest 3.2.2 cumpre as regras documentadas de autentica
 
 ## 6. Priorização
 
-Critério: **risco = impacto × probabilidade**, com desempate pela frequência de uso. Ordem resultante: autorização → estoque e carrinho → validação de produtos → usuários → front.
+Critério: **risco = impacto × probabilidade**, com desempate pela frequência de uso. Ordem resultante: autorização → estoque e carrinho → validação de produtos → usuários.
 
 Prioridades nos cenários: **P1** (bloqueia a entrega), **P2** (importante) e **P3** (desejável).
 
@@ -58,9 +58,9 @@ Prioridades nos cenários: **P1** (bloqueia a entrega), **P2** (importante) e **
 
 | Ambiente | Usado por | Limitações |
 | --- | --- | --- |
-| API local 3.2.2 (`http://localhost:3000`) | Testes de API (Cypress, Playwright, Robot) e CI | Os dados persistem entre reinícios (DOC-02) |
-| API pública (`https://serverest.dev`) | Preparação de dados dos testes E2E | Compartilhada; dados apagados diariamente; limite de 300 requisições a cada 30 s por IP |
-| Front público (`https://front.serverest.dev`) | Testes E2E | Carrinho incompleto [DOC]; a URL da API é fixa no código do front |
+| API local 3.2.2 (`http://localhost:3000`) | Testes de API (Cypress e Robot) e CI | Os dados persistem entre reinícios (DOC-02) |
+| API pública (`https://serverest.dev`) | Preparação de dados dos testes E2E (próximo passo) | Compartilhada; dados apagados diariamente; limite de 300 requisições a cada 30 s por IP |
+| Front público (`https://front.serverest.dev`) | Testes E2E (próximo passo) | Carrinho incompleto [DOC]; a URL da API é fixa no código do front |
 
 **Regra:** testes de API usam só a API local; testes E2E usam só o front e a API públicos. O front público nunca enxerga dados criados na API local, porque a URL da API é fixa no código dele [OBS].
 
@@ -85,21 +85,23 @@ Não se usa cobertura de código, porque o sistema é de terceiros.
 
 | Quando | O quê | Onde |
 | --- | --- | --- |
-| Cada pull request | Smoke de API (6 testes P1) | CI, API local |
-| Push na `main` | Regressão de API + defeitos conhecidos (não bloqueia) | CI, API local |
-| Diariamente às 8h (Brasília) | Regressão de API | CI |
+| Cada pull request | Lint dos testes e smoke de API (6 testes P1) | CI, API local |
+| Push na `main` | Regressão de API e defeitos conhecidos (não bloqueia) | CI, API local |
+| Diariamente às 8h (Brasília) | Regressão de API e defeitos conhecidos | CI |
+| Antes de cada entrega, ou quando o Robot mudar | Suíte Robot | Local |
 | Antes de cada nova rodada de cenários | Sessão exploratória de 30 a 45 min, com charter | Local |
+
 
 ## 12. Abordagem
 
-- **Níveis:** API (integração do sistema, a maior parte) e E2E (sistema completo, poucos fluxos). Sem testes unitários: não temos o código como produto próprio.
+- **Níveis:** API (integração do sistema). Os testes E2E ficam como próximo passo. Sem testes unitários: não temos o código como produto próprio.
 - **Tipos:** funcional, negativo, contrato (schema), autorização, smoke, regressão e exploratório.
 - **Técnicas:** particionamento de equivalência (tipos e formatos), valor limite (preço e quantidade), tabela de decisão (autorização) e transição de estados (token e carrinho).
 - **Por quê:** o ServeRest tem validação de entrada rica e regras de estado claras, onde essas técnicas encontram defeitos com poucos casos. As duas técnicas encontraram os dois defeitos: valor limite e equivalência levaram ao BUG-01 e ao BUG-02.
 
 ## 13. Estratégia de automação
 
-Automatizar o que é **repetitivo, estável e de alto risco**: regras de negócio da API, autorização, schemas e fluxos críticos de tela.
+Automatizar o que é **repetitivo, estável e de alto risco**: regras de negócio da API, autorização e schemas. Os fluxos críticos de tela entram com o E2E, no próximo passo.
 
 Manter manual o que é **exploratório, pontual ou caro de automatizar**: investigação de defeitos novos, usabilidade e mensagens do front, e o token expirado.
 
@@ -107,8 +109,9 @@ Critério de decisão: frequência de execução, risco, estabilidade do comport
 
 **Defeitos conhecidos** recebem a tag `@bug-aberto`: o teste afirma o comportamento correto, sai da regressão bloqueante e roda num passo separado que não bloqueia o pipeline.
 
-**Situação atual:** 55 testes de API automatizados com Cypress (53 na regressão e 2 defeitos conhecidos) e 4 com Robot Framework, que repetem cenários do Cypress para comparar as ferramentas no mesmo caso. 15 dos 18 cenários P1 estão automatizados; os 3 restantes são de E2E, em andamento.
+**Situação atual:** 56 testes de API automatizados com Cypress (54 na regressão e 2 defeitos conhecidos) e 9 com Robot Framework: 3 repetem cenários do Cypress para comparar as ferramentas, 5 aplicam valor limite no estilo dirigido por dados do Robot e 1 verifica os headers de segurança (CT-SEG-01), que só o Robot cobre. Todos os 15 cenários P1 de API estão automatizados; os 3 P1 de interface ficam como próximo passo.
 
+**Qualidade do código de teste:** lint (ESLint com as regras recomendadas do Cypress e uma regra contra `.only`) em todo pull request.
 
 ## 14. Critérios de qualidade e riscos residuais
 

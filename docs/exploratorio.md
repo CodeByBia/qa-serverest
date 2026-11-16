@@ -39,7 +39,7 @@ A exploração confirmou a maior parte das regras documentadas, encontrou **2 de
 | Filtro `quantidadeTotal` de carrinhos | Inteiro ≥ 0 [DOC] | `quantidadeTotal=0` retorna 400 | **Divergência DOC-01** |
 | Reinício da API local | "No local basta reiniciar" para limpar [DOC] | Os dados persistem (arquivos em `node_modules/serverest/src/data`) | **Divergência DOC-02** |
 | Excluir produto que está em carrinho | A resposta de erro traz o campo `idCarrinho` (uma lista) [DOC: modelo da resposta] | A API devolve o campo com outro nome: `idCarrinhos` | **Divergência DOC-03** |
-| Headers de segurança | Lista documentada no README [DOC] | Presentes; `X-Powered-By` ausente | Conforme |
+| Headers de segurança | Lista documentada no README [DOC] | Presentes; `X-Powered-By` ausente | Conforme (verificado pelo CT-SEG-01) |
 
 ## Lacunas para esclarecer
 
@@ -47,8 +47,8 @@ Registradas como **perguntas**, não como defeitos, porque não há regra escrit
 
 1. E-mail e nome de produto deveriam ser únicos **sem diferenciar maiúsculas**?
 2. Existe uma **política mínima de senha**?
-3. **Textos numéricos** (como `"10"`) devem ser aceitos no preço??
-1. O `DELETE` e o `PUT` de usuários deveriam validar o **formato do ID**, como o `GET`?
+3. **Textos numéricos** (como `"10"`) devem ser aceitos no preço?
+4. O `DELETE` e o `PUT` de usuários deveriam validar o **formato do ID**, como o `GET`?
 
 ## Observações de segurança
 
