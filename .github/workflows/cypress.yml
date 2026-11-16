@@ -1,21 +1,21 @@
 name: Cypress
 
-# on: QUANDO o workflow roda 
+# on: QUANDO o workflow roda
 on:
-  # pull_request: a cada PR aberto ou atualizado...
+  # pull_request: a cada PR aberto ou atualizado (sem filtro de pastas: a proteção da main exige estes checks em todo PR)
   pull_request:
-    # paths: ...mas só se o PR mexer nestes arquivos
-    paths:
-      - 'cypress-tests/**'
-      - '.github/workflows/cypress.yml'
-  # push: quando algo chega na main 
+  # push: quando algo chega na main
   push:
     branches: [main]
   # schedule: todo dia num horário fixo (cron: minuto hora dia mês dia-da-semana, em UTC)
   schedule:
     - cron: '0 11 * * *' # 11h UTC = 8h em Brasília
-
+  # workflow_dispatch: cria o botão "Run workflow" para rodar na mão
   workflow_dispatch:
+
+# permissions: o workflow só precisa LER o repositório
+permissions:
+  contents: read
 
 # concurrency: se chegar uma execução nova na mesma branch, cancela a antiga
 concurrency:
@@ -29,6 +29,32 @@ defaults:
 
 # jobs: os conjuntos de passos; cada job roda numa máquina nova
 jobs:
+  # ===== JOB 0: lint dos testes, só em pull request =====
+  lint:
+    name: Lint dos testes
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      - name: Instalar o Node do .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: cypress-tests/package-lock.json
+
+      # CYPRESS_INSTALL_BINARY=0: o lint só lê o código, não precisa baixar o Cypress
+      - name: Instalar dependências
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+
+      - name: Rodar o lint
+        run: npm run lint
+
   # ===== JOB 1: smoke, só em pull request =====
   api-smoke:
     name: Smoke de API
