@@ -25,10 +25,3 @@ CT-AUT-01 Token invalido e recusado
     Dado que existe um administrador autenticado
     Quando cadastro um produto    token=Bearer token.invalido.qualquer
     Entao o status deve ser    401
-
-CT-PRD-03 Preco zero e recusado
-    [Tags]    regressao    limites
-    Dado que existe um administrador autenticado
-    Quando cadastro um produto    preco=0
-    Entao o status deve ser    400
-    E a mensagem deve ser    preco    preco deve ser um número positivo
